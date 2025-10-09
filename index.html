@@ -79,13 +79,17 @@
     /* Webflow integration optimizations */
     .booking-container {
       position: relative;
-      z-index: 1;
+      z-index: 1000;
       isolation: isolate;
       contain: layout style paint;
       width: 100%;
       max-width: 100%;
       margin: 0 auto;
       background: transparent;
+      display: block;
+      visibility: visible;
+      opacity: 1;
+      min-height: 400px;
     }
 
     /* Prevent Webflow style conflicts */
@@ -104,6 +108,16 @@
     /* Prevent Webflow from overriding our styles */
     .booking-container *:not([class*="w-"]) {
       font-family: inherit !important;
+    }
+    
+    /* Force Webflow visibility */
+    .booking-container,
+    .booking-form,
+    .booking-content {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: relative !important;
     }
 
     /* Webflow-specific optimizations */
@@ -1890,7 +1904,8 @@
   </style>
 </head>
 <body>
-  <div class="booking-form" data-wf-form="booking">
+  <div class="booking-container" data-wf-form="booking" data-wf-form-type="booking">
+    <div class="booking-form">
     <!-- Progress Indicator -->
     <div class="progress-container">
       <div class="progress-bar">
@@ -2281,6 +2296,7 @@
         </button>
       </div>
     </div>
+  </div>
   </div>
 
   <script>
