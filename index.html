@@ -79,17 +79,13 @@
     /* Webflow integration optimizations */
     .booking-container {
       position: relative;
-      z-index: 1000;
+      z-index: 1;
       isolation: isolate;
       contain: layout style paint;
       width: 100%;
       max-width: 100%;
       margin: 0 auto;
       background: transparent;
-      display: block;
-      visibility: visible;
-      opacity: 1;
-      min-height: 400px;
     }
 
     /* Prevent Webflow style conflicts */
@@ -108,16 +104,6 @@
     /* Prevent Webflow from overriding our styles */
     .booking-container *:not([class*="w-"]) {
       font-family: inherit !important;
-    }
-    
-    /* Force Webflow visibility */
-    .booking-container,
-    .booking-form,
-    .booking-content {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-      position: relative !important;
     }
 
     /* Webflow-specific optimizations */
@@ -154,10 +140,10 @@
       max-width: 480px;
       width: 100%;
       margin: 0 auto;
-      background: var(--white);
+      background: var(--white) !important;
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-lg);
-      padding: var(--space-xl);
+      overflow: hidden;
       position: relative;
       z-index: 10;
       isolation: isolate;
@@ -165,19 +151,25 @@
       transition: all var(--transition-slow);
       will-change: transform;
       backface-visibility: hidden;
-      min-height: 400px;
-      box-sizing: border-box;
+      min-height: 0;
+      flex-shrink: 0;
+      display: block;
+      border: 1px solid var(--secondary);
     }
 
     .booking-content {
-      padding: 0;
-      margin: 0;
+      padding: var(--space-lg) var(--space-xl);
+      background: var(--white);
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
     }
 
     /* ===== PROGRESS INDICATOR ===== */
     .progress-container {
-      padding: var(--space-sm) var(--space-md) 0;
-      margin-bottom: var(--space-md);
+      padding: var(--space-lg) var(--space-xl) var(--space-md);
+      margin-bottom: 0;
+      background: var(--white);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      border-bottom: 1px solid var(--secondary);
     }
 
     .progress-bar {
@@ -1392,9 +1384,10 @@
         width: calc(100vw - 16px);
         max-width: 420px;
         margin: 8px auto;
-        padding: var(--space-lg);
+        background: var(--white) !important;
         border-radius: var(--radius-lg);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--secondary);
         position: relative;
         z-index: 10;
         isolation: isolate;
@@ -1405,12 +1398,10 @@
         backface-visibility: hidden;
         will-change: transform;
         touch-action: manipulation;
-        box-sizing: border-box;
       }
 
       .booking-content {
-        padding: 0;
-        margin: 0;
+        padding: var(--space-lg);
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
       }
@@ -1453,8 +1444,17 @@
 
 
       .progress-container {
-        padding: var(--space-sm) var(--space-md) 0;
-        margin-bottom: var(--space-md);
+        padding: var(--space-lg) var(--space-md) var(--space-md);
+        margin-bottom: 0;
+        background: var(--white) !important;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        border-bottom: 1px solid var(--secondary);
+      }
+
+      .booking-content {
+        padding: var(--space-md);
+        background: var(--white) !important;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
       }
 
       .progress-step-circle {
@@ -1904,8 +1904,7 @@
   </style>
 </head>
 <body>
-  <div class="booking-container" data-wf-form="booking" data-wf-form-type="booking">
-    <div class="booking-form">
+  <div class="booking-form" data-wf-form="booking">
     <!-- Progress Indicator -->
     <div class="progress-container">
       <div class="progress-bar">
@@ -2296,7 +2295,6 @@
         </button>
       </div>
     </div>
-  </div>
   </div>
 
   <script>
