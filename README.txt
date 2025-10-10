@@ -1,33 +1,13 @@
-Snout Booking - Deployable Package
+Snout Booking v1.0.2
 
-What this is
-A clean, accessible, mobile first booking form with a time modal and apply all logic, scoped under #snout-booking.
+Framed step container and auto resize for Webflow iframe.
 
-Files
-index.html
-booking.css
-booking.js
-README.txt
-
-Deploy on GitHub and Render
-1. Create a new GitHub repo and add these files at the root
-2. On Render choose Static Site
-   Build command none
-   Publish directory set to root
-3. After deploy you get a public URL
-
-Embed into Webflow
-Use an iframe to avoid the 50k embed limit
-
-<iframe
-  src="https://YOUR-RENDER-URL"
-  title="Snout Booking"
-  style="width:100%; min-height:940px; border:0;"
-  loading="lazy"
-  referrerpolicy="no-referrer-when-downgrade"
-  sandbox="allow-scripts allow-forms allow-same-origin"
-></iframe>
-
-Notes
-You can wire the submit handler to Airtable or Stripe later with fetch.
-Change the brand look by editing CSS variables at the top of booking.css.
+Parent page listener example for Webflow:
+<script>
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'snout-size'){
+    var iframe = document.querySelector('iframe[src="https://snout-form.onrender.com"]');
+    if(iframe){ iframe.style.height = e.data.height + 'px'; }
+  }
+});
+</script>

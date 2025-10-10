@@ -19,9 +19,7 @@
 
 #snout-booking *,
 #snout-booking *::before,
-#snout-booking *::after {
-  box-sizing: border-box;
-}
+#snout-booking *::after { box-sizing: border-box; }
 
 .visually-hidden {
   position: absolute !important;
@@ -31,6 +29,7 @@
   white-space: nowrap; border: 0;
 }
 
+/* Layout */
 #snout-booking .sb-header { padding: 20px 16px 0; text-align: center; }
 #snout-booking .sb-title { margin: 0; font-weight: 700; font-size: 28px; color: var(--brown); }
 #snout-booking .sb-subtitle { margin: 6px 0 20px; color: var(--muted); }
@@ -44,7 +43,7 @@
 #snout-booking .sb-steps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  list-style: none; padding: 0; margin: 0 0 16px;
+  list-style: none; padding: 0; margin: 0 0 12px;
   gap: 8px;
 }
 #snout-booking .sb-steps li {
@@ -56,6 +55,17 @@
 #snout-booking .sb-step { display: none; }
 #snout-booking .sb-step.is-active { display: block; }
 
+/* Single frame around the active step content */
+#snout-booking .sb-frame{
+  background: white;
+  border: 1px solid #efe6df;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-top: 8px;
+}
+
+/* Cards */
 #snout-booking .sb-service-grid {
   display: grid; gap: 12px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -76,6 +86,7 @@
   background: #fff6fc;
 }
 
+/* Buttons */
 #snout-booking .sb-btn {
   padding: 12px 16px; border: 1px solid #eadfd6; background: white;
   border-radius: 10px; font-weight: 600; cursor: pointer;
@@ -85,7 +96,11 @@
 #snout-booking .sb-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px; }
 #snout-booking .sb-prev { margin-right: auto; }
 
-#snout-booking .sb-calendar { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px; }
+/* Calendar */
+#snout-booking .sb-calendar {
+  background: white; border-radius: var(--radius); box-shadow: none; padding: 12px;
+  border: 1px solid #efe6df;
+}
 #snout-booking .sb-calendar-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 6px; }
 #snout-booking .sb-month { font-weight: 700; color: var(--brown); }
 #snout-booking .sb-nav { border: 0; background: #f0e7e0; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; }
@@ -108,6 +123,7 @@
 }
 #snout-booking .sb-chip button { border: 0; background: transparent; cursor: pointer; font-size: 16px; }
 
+/* Apply all */
 #snout-booking .sb-apply-all { display: grid; gap: 8px; padding: 8px 0; }
 #snout-booking .sb-switch { display: inline-grid; grid-auto-flow: column; gap: 10px; align-items: center; }
 #snout-booking .sb-switch .sb-slider {
@@ -120,6 +136,7 @@
   background: white; top: 4px; left: 4px; box-shadow: var(--shadow); transition: transform .15s;
 }
 
+/* Modal */
 #snout-booking .sb-modal[hidden] { display: none; }
 #snout-booking .sb-modal { position: fixed; inset: 0; z-index: 9999; }
 #snout-booking .sb-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.45); }
@@ -141,6 +158,7 @@
 #snout-booking .sb-time { border: 1px solid #efe6df; border-radius: 10px; padding: 8px 10px; text-align: center; cursor: pointer; }
 #snout-booking .sb-time.is-selected { background: var(--pink); border-color: var(--ring); }
 
+/* Fields */
 #snout-booking .sb-field { display: grid; gap: 6px; margin-bottom: 12px; }
 #snout-booking label { font-weight: 600; color: var(--brown); }
 #snout-booking input[type="text"],
@@ -152,30 +170,14 @@
 #snout-booking input:focus,
 #snout-booking textarea:focus { outline: 2px solid var(--ring); outline-offset: 1px; }
 
+/* Recap */
 #snout-booking .sb-times-recap { display: grid; gap: 8px; }
-#snout-booking .sb-date-card { border: 1px solid #efe6df; border-radius: 12px; padding: 10px; background: white; }
+#snout-booking .sb-date-card { border: 1px solid #efe6df; border-radius: 12px; padding: 10px; background: white; box-shadow: none; }
 #snout-booking .sb-date-title { display: flex; align-items: center; justify-content: space-between; font-weight: 600; color: var(--brown); }
 #snout-booking .sb-pill { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #eadfd6; padding: 6px 10px; border-radius: 999px; margin: 6px 6px 0 0; }
 
+/* Small screens */
 @media (max-width: 480px) {
   #snout-booking .sb-modal-content { margin: 0; min-height: 100vh; border-radius: 0; }
   #snout-booking .sb-timegrid { max-height: calc(100vh - 260px); }
 }
-
-/* Framed border around only the current step */
-#snout-booking .sb-frame{
-  background: white;
-  border: 1px solid #efe6df;
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  padding: 16px;
-}
-
-/* Remove redundant shadows where the frame provides structure */
-#snout-booking .sb-calendar,
-#snout-booking .sb-date-card{
-  box-shadow: none;
-}
-
-/* Space between the stepper and the framed content */
-#snout-booking .sb-step .sb-frame{ margin-top: 8px; }

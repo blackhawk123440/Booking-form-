@@ -3,6 +3,17 @@
   const root = document.getElementById('snout-booking');
   if (!root) return;
 
+  // Auto resize support for an iframe parent like Webflow
+  function postHeight(){
+    try{
+      const h = document.getElementById('snout-booking').scrollHeight + 20;
+      if (window.parent) window.parent.postMessage({type:'snout-size', height:h}, '*');
+    }catch(e){}
+  }
+  const __snoutRO = new ResizeObserver(postHeight);
+  __snoutRO.observe(root);
+  postHeight();
+
   const qs = (sel, el = root) => el.querySelector(sel);
   const qsa = (sel, el = root) => Array.from(el.querySelectorAll(sel));
 
@@ -16,6 +27,7 @@
     stepDots.forEach(d => d.classList.remove('is-active'));
     qs(`#step-${stepNum}`).classList.add('is-active');
     qs(`.sb-steps li[data-step="${stepNum}"]`).classList.add('is-active');
+    postHeight();
   }
 
   let service = null;
@@ -85,6 +97,7 @@
       }
       daysGrid.appendChild(cell);
     }
+    postHeight();
   }
 
   qs('.sb-nav.prev').addEventListener('click', () => { viewDate.setMonth(viewDate.getMonth()-1); buildCalendar(); });
@@ -127,6 +140,7 @@
       });
       selectedList.appendChild(li);
     });
+    postHeight();
   }
 
   const modal = document.getElementById('time-modal');
@@ -158,7 +172,7 @@
     modalDateEl.textContent = pretty(d);
 
     const state = timesByDate[id] || { attached: true, duration: 30, times: [] };
-    document.querySelectorAll('.sb-toggle-btn').forEach(btn => {
+    modal.querySelectorAll('.sb-toggle-btn').forEach(btn => {
       const isActive = Number(btn.dataset.duration) === Number(state.duration);
       btn.classList.toggle('is-active', isActive);
       btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
@@ -188,7 +202,6 @@
     });
 
     modal.hidden = false;
-  }
     const prevActive = document.activeElement;
     root.setAttribute('aria-hidden', 'true');
     modalContent.focus();
@@ -202,9 +215,9 @@
     if (openerButton && typeof openerButton.focus === 'function') openerButton.focus();
   }
 
-  document.querySelectorAll('.sb-toggle-btn').forEach(btn => {
+  modal.querySelectorAll('.sb-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.sb-toggle-btn').forEach(b => { b.classList.remove('is-active'); b.setAttribute('aria-pressed','false'); });
+      modal.querySelectorAll('.sb-toggle-btn').forEach(b => { b.classList.remove('is-active'); b.setAttribute('aria-pressed','false'); });
       btn.classList.add('is-active');
       btn.setAttribute('aria-pressed','true');
       const state = timesByDate[activeDate] || { attached:true, duration:30, times:[] };
@@ -240,9 +253,7 @@
   });
 
   modal.addEventListener('click', (e) => { if (e.target.hasAttribute('data-close')) closeModal(); });
-  document.addEventListener('keydown', (e) => {
-    if (!modal.hidden && e.key === 'Escape') closeModal();
-  });
+  document.addEventListener('keydown', (e) => { if (!modal.hidden && e.key === 'Escape') closeModal(); });
 
   modalContent.addEventListener('keydown', (e) => {
     if (e.key !== 'Tab') return;
@@ -313,6 +324,7 @@
       card.append(header, pills);
       wrap.appendChild(card);
     });
+    postHeight();
   }
 
   document.getElementById('sb-form').addEventListener('submit', (e) => {

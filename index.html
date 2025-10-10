@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="booking.css">
 </head>
 <body>
-  <div id="snout-booking" data-version="v1.0.0">
+  <div id="snout-booking" data-version="v1.0.2">
     <header class="sb-header">
       <h1 class="sb-title">Book Care</h1>
       <p class="sb-subtitle">Friendly. Precise. Premium.</p>
@@ -24,113 +24,121 @@
         <li data-step="4">Contact</li>
       </ol>
 
-      <section class="sb-step is-active" id="step-1" aria-labelledby="step1-title"><div class="sb-frame">
-        <h2 id="step1-title" class="visually-hidden">Choose a service</h2>
-        <fieldset class="sb-fieldset">
-          <legend class="sb-legend">Choose a service</legend>
-          <div class="sb-service-grid">
-            <label class="sb-card">
-              <input type="radio" name="service" value="drop-in" required>
-              <span class="sb-card-title">Drop in</span>
-              <span class="sb-card-text">30 or 60 minutes</span>
-            </label>
-            <label class="sb-card">
-              <input type="radio" name="service" value="walk">
-              <span class="sb-card-title">Dog walk</span>
-              <span class="sb-card-text">30 or 60 minutes</span>
-            </label>
-            <label class="sb-card">
-              <input type="radio" name="service" value="house-sitting">
-              <span class="sb-card-title">House sitting</span>
-              <span class="sb-card-text">Overnight care</span>
-            </label>
-            <label class="sb-card">
-              <input type="radio" name="service" value="24-hour-care">
-              <span class="sb-card-title">24 hour care</span>
-              <span class="sb-card-text">Full day</span>
-            </label>
-            <label class="sb-card">
-              <input type="radio" name="service" value="pet-taxi">
-              <span class="sb-card-title">Pet taxi</span>
-              <span class="sb-card-text">Pickup and drop off</span>
-            </label>
-          </div>
-        </fieldset>
-        <div class="sb-actions">
-          <button class="sb-btn sb-next" data-next="2" type="button" aria-controls="step-2">Next</button>
-        </div>
-      </div></section>
-
-      <section class="sb-step" id="step-2" aria-labelledby="step2-title"><div class="sb-frame">
-        <h2 id="step2-title" class="visually-hidden">Choose dates</h2>
-        <div class="sb-calendar" role="grid" aria-label="Select dates">
-          <div class="sb-calendar-header">
-            <button class="sb-nav prev" type="button" aria-label="Previous month">&lt;</button>
-            <div class="sb-month" id="sb-month-label">October 2025</div>
-            <button class="sb-nav next" type="button" aria-label="Next month">&gt;</button>
-          </div>
-          <div class="sb-weekdays" aria-hidden="true">
-            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-          </div>
-          <div class="sb-days" id="sb-days" role="rowgroup"></div>
-        </div>
-
-        <div class="sb-selected" aria-live="polite" aria-atomic="true">
-          <h3 class="sb-selected-title">Selected</h3>
-          <ul class="sb-selected-list" id="sb-selected-list"></ul>
-        </div>
-
-        <div class="sb-actions">
-          <button class="sb-btn sb-prev" data-prev="1" type="button" aria-controls="step-1">Back</button>
-          <button class="sb-btn sb-next" data-next="3" type="button" aria-controls="step-3" id="to-times" disabled>Next</button>
-        </div>
-      </div></section>
-
-      <section class="sb-step" id="step-3" aria-labelledby="step3-title"><div class="sb-frame">
-        <h2 id="step3-title" class="visually-hidden">Select times</h2>
-
-        <div class="sb-apply-all">
-          <label class="sb-switch">
-            <input id="apply-all" type="checkbox" aria-describedby="apply-desc">
-            <span class="sb-slider" aria-hidden="true"></span>
-            <span class="sb-switch-label">Apply first date times to all</span>
-          </label>
-          <p id="apply-desc" class="sb-help">Toggle on to copy the first date times to every selected date. Editing a single date will detach it.</p>
-        </div>
-
-        <div class="sb-times-recap" id="times-recap" aria-live="polite"></div>
-
-        <div class="sb-actions">
-          <button class="sb-btn sb-prev" data-prev="2" type="button" aria-controls="step-2">Back</button>
-          <button class="sb-btn sb-next" data-next="4" type="button" aria-controls="step-4" id="to-contact" disabled>Next</button>
-        </div>
-      </div></section>
-
-      <section class="sb-step" id="step-4" aria-labelledby="step4-title"><div class="sb-frame">
-        <h2 id="step4-title" class="visually-hidden">Contact details</h2>
-        <form id="sb-form" novalidate>
-          <div class="sb-field">
-            <label for="full-name">Full name</label>
-            <input id="full-name" name="fullName" type="text" autocomplete="name" required>
-          </div>
-          <div class="sb-field">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
-          </div>
-          <div class="sb-field">
-            <label for="phone">Phone</label>
-            <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="^[0-9\-\+\(\)\s]{7,}$" required>
-          </div>
-          <div class="sb-field">
-            <label for="notes">Notes</label>
-            <textarea id="notes" name="notes" rows="3" placeholder="Anything we should know"></textarea>
-          </div>
+      <section class="sb-step is-active" id="step-1" aria-labelledby="step1-title">
+        <div class="sb-frame">
+          <h2 id="step1-title" class="visually-hidden">Choose a service</h2>
+          <fieldset class="sb-fieldset">
+            <legend class="sb-legend">Choose a service</legend>
+            <div class="sb-service-grid">
+              <label class="sb-card">
+                <input type="radio" name="service" value="drop-in" required>
+                <span class="sb-card-title">Drop in</span>
+                <span class="sb-card-text">30 or 60 minutes</span>
+              </label>
+              <label class="sb-card">
+                <input type="radio" name="service" value="walk">
+                <span class="sb-card-title">Dog walk</span>
+                <span class="sb-card-text">30 or 60 minutes</span>
+              </label>
+              <label class="sb-card">
+                <input type="radio" name="service" value="house-sitting">
+                <span class="sb-card-title">House sitting</span>
+                <span class="sb-card-text">Overnight care</span>
+              </label>
+              <label class="sb-card">
+                <input type="radio" name="service" value="24-hour-care">
+                <span class="sb-card-title">24 hour care</span>
+                <span class="sb-card-text">Full day</span>
+              </label>
+              <label class="sb-card">
+                <input type="radio" name="service" value="pet-taxi">
+                <span class="sb-card-title">Pet taxi</span>
+                <span class="sb-card-text">Pickup and drop off</span>
+              </label>
+            </div>
+          </fieldset>
           <div class="sb-actions">
-            <button class="sb-btn sb-prev" data-prev="3" type="button" aria-controls="step-3">Back</button>
-            <button class="sb-btn sb-primary" type="submit">Submit</button>
+            <button class="sb-btn sb-next" data-next="2" type="button" aria-controls="step-2">Next</button>
           </div>
-        </form>
-      </div></section>
+        </div>
+      </section>
+
+      <section class="sb-step" id="step-2" aria-labelledby="step2-title">
+        <div class="sb-frame">
+          <h2 id="step2-title" class="visually-hidden">Choose dates</h2>
+          <div class="sb-calendar" role="grid" aria-label="Select dates">
+            <div class="sb-calendar-header">
+              <button class="sb-nav prev" type="button" aria-label="Previous month">&lt;</button>
+              <div class="sb-month" id="sb-month-label">October 2025</div>
+              <button class="sb-nav next" type="button" aria-label="Next month">&gt;</button>
+            </div>
+            <div class="sb-weekdays" aria-hidden="true">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="sb-days" id="sb-days" role="rowgroup"></div>
+          </div>
+
+          <div class="sb-selected" aria-live="polite" aria-atomic="true">
+            <h3 class="sb-selected-title">Selected</h3>
+            <ul class="sb-selected-list" id="sb-selected-list"></ul>
+          </div>
+
+          <div class="sb-actions">
+            <button class="sb-btn sb-prev" data-prev="1" type="button" aria-controls="step-1">Back</button>
+            <button class="sb-btn sb-next" data-next="3" type="button" aria-controls="step-3" id="to-times" disabled>Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="sb-step" id="step-3" aria-labelledby="step3-title">
+        <div class="sb-frame">
+          <h2 id="step3-title" class="visually-hidden">Select times</h2>
+
+          <div class="sb-apply-all">
+            <label class="sb-switch">
+              <input id="apply-all" type="checkbox" aria-describedby="apply-desc">
+              <span class="sb-slider" aria-hidden="true"></span>
+              <span class="sb-switch-label">Apply first date times to all</span>
+            </label>
+            <p id="apply-desc" class="sb-help">Toggle on to copy the first date times to every selected date. Editing a single date will detach it.</p>
+          </div>
+
+          <div class="sb-times-recap" id="times-recap" aria-live="polite"></div>
+
+          <div class="sb-actions">
+            <button class="sb-btn sb-prev" data-prev="2" type="button" aria-controls="step-2">Back</button>
+            <button class="sb-btn sb-next" data-next="4" type="button" aria-controls="step-4" id="to-contact" disabled>Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="sb-step" id="step-4" aria-labelledby="step4-title">
+        <div class="sb-frame">
+          <h2 id="step4-title" class="visually-hidden">Contact details</h2>
+          <form id="sb-form" novalidate>
+            <div class="sb-field">
+              <label for="full-name">Full name</label>
+              <input id="full-name" name="fullName" type="text" autocomplete="name" required>
+            </div>
+            <div class="sb-field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
+            </div>
+            <div class="sb-field">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="^[0-9\-\+\(\)\s]{7,}$" required>
+            </div>
+            <div class="sb-field">
+              <label for="notes">Notes</label>
+              <textarea id="notes" name="notes" rows="3" placeholder="Anything we should know"></textarea>
+            </div>
+            <div class="sb-actions">
+              <button class="sb-btn sb-prev" data-prev="3" type="button" aria-controls="step-3">Back</button>
+              <button class="sb-btn sb-primary" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </section>
     </main>
 
     <div class="sb-modal" id="time-modal" hidden>
