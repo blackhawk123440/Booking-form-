@@ -86,6 +86,9 @@
       max-width: 100%;
       margin: 0 auto;
       background: transparent;
+      height: auto;
+      min-height: auto;
+      overflow: visible;
     }
 
     /* Prevent Webflow style conflicts */
@@ -114,6 +117,18 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
+    }
+
+    /* Webflow height integration */
+    .booking-form {
+      transition: height 0.3s ease, min-height 0.3s ease, transform 0.3s ease;
+      will-change: height, min-height, transform;
+    }
+
+    /* Ensure proper Webflow containment */
+    .booking-form * {
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     /* Prevent Webflow animations from interfering */
@@ -149,15 +164,23 @@
       z-index: 10;
       isolation: isolate;
       contain: layout style paint;
-      transition: all var(--transition-slow);
-      will-change: transform;
+      transition: all var(--transition-slow), height var(--transition-slow);
+      will-change: transform, height;
       backface-visibility: hidden;
-      min-height: 0;
+      min-height: auto;
+      height: auto;
       flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .booking-content {
       padding: var(--space-md);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: visible;
     }
 
     /* ===== PROGRESS INDICATOR ===== */
@@ -237,10 +260,16 @@
     .form-section {
       display: none;
       animation: fadeInUp 0.4s ease;
+      flex: 1;
+      min-height: 0;
+      overflow: visible;
     }
 
     .form-section.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
     }
 
     @keyframes fadeInUp {
@@ -1388,8 +1417,11 @@
         -webkit-transform: translateZ(0);
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
-        will-change: transform;
+        will-change: transform, height, min-height;
         touch-action: manipulation;
+        transition: height 0.3s ease, min-height 0.3s ease, transform 0.3s ease;
+        height: auto;
+        min-height: auto;
       }
 
       .booking-content {
@@ -2281,6 +2313,31 @@
   </div>
 
   <script>
+    // ===== DYNAMIC CONTAINER HEIGHT ===== */
+    function adjustContainerHeight() {
+      const bookingForm = document.querySelector('.booking-form');
+      const activeSection = document.querySelector('.form-section.active');
+      
+      if (bookingForm && activeSection) {
+        // Get the natural height of the active section
+        const sectionHeight = activeSection.scrollHeight;
+        const progressHeight = document.querySelector('.progress-container').offsetHeight;
+        const padding = 32; // 16px top + 16px bottom
+        
+        // Calculate total height needed
+        const totalHeight = sectionHeight + progressHeight + padding;
+        
+        // Set container height with smooth transition
+        bookingForm.style.height = `${totalHeight}px`;
+        bookingForm.style.minHeight = `${totalHeight}px`;
+        
+        // Add a small delay to ensure smooth transition
+        setTimeout(() => {
+          bookingForm.style.transition = 'height 0.3s ease, min-height 0.3s ease';
+        }, 10);
+      }
+    }
+
     // ===== BOOKING FORM STATE MANAGEMENT =====
     class BookingFormState {
       constructor() {
@@ -2525,6 +2582,11 @@
             this.updateSelectedDatesDisplay();
             break;
         }
+
+        // Adjust container height after step is set up
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 50);
       }
 
       selectService(service) {
@@ -2789,6 +2851,11 @@
             item.appendChild(removeDateBtn);
             listElement.appendChild(item);
           });
+          
+        // Adjust container height after dates display is updated
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 10);
       }
 
       removeDate(dateStr) {
@@ -2797,6 +2864,11 @@
         this.calendar.render();
         this.updateSelectedDatesDisplay();
         this.updateButtonStates();
+        
+        // Adjust container height after removing date
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 10);
       }
 
       applyFirstDateTimesToAll() {
@@ -2814,6 +2886,11 @@
         
         this.updateSelectedDatesDisplay();
         this.updateButtonStates();
+        
+        // Adjust container height after applying times
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 10);
       }
 
       formatTimesForService(times, dateStr) {
@@ -2976,6 +3053,11 @@
 
         // Setup navigation
         this.setupNavigation();
+        
+        // Adjust container height after calendar render
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 10);
       }
 
       getDateString(day) {
@@ -3282,12 +3364,35 @@
       }
     }
 
+    // ===== RESIZE OBSERVER FOR DYNAMIC HEIGHT =====
+    let resizeObserver;
+    
+    function setupResizeObserver() {
+      const bookingForm = document.querySelector('.booking-form');
+      const activeSection = document.querySelector('.form-section.active');
+      
+      if (bookingForm && activeSection && 'ResizeObserver' in window) {
+        resizeObserver = new ResizeObserver((entries) => {
+          for (let entry of entries) {
+            adjustContainerHeight();
+          }
+        });
+        
+        resizeObserver.observe(activeSection);
+      }
+    }
+
     // ===== INITIALIZE APPLICATION =====
     let bookingForm;
 
     document.addEventListener('DOMContentLoaded', () => {
       bookingForm = new BookingFormController();
       window.bookingForm = bookingForm; // Make globally accessible
+      
+      // Setup resize observer after initial load
+      setTimeout(() => {
+        setupResizeObserver();
+      }, 100);
     });
 
     // ===== ACCESSIBILITY ENHANCEMENTS =====
@@ -3308,6 +3413,11 @@
       if (e.key === 'Enter' && e.target.classList.contains('type-card')) {
         e.target.click();
       }
+    });
+
+    // ===== WINDOW RESIZE HANDLER =====
+    window.addEventListener('resize', () => {
+      adjustContainerHeight();
     });
 
     // ===== TOUCH OPTIMIZATIONS =====
