@@ -161,3 +161,21 @@
   #snout-booking .sb-modal-content { margin: 0; min-height: 100vh; border-radius: 0; }
   #snout-booking .sb-timegrid { max-height: calc(100vh - 260px); }
 }
+
+/* Framed border around only the current step */
+#snout-booking .sb-frame{
+  background: white;
+  border: 1px solid #efe6df;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+/* Remove redundant shadows where the frame provides structure */
+#snout-booking .sb-calendar,
+#snout-booking .sb-date-card{
+  box-shadow: none;
+}
+
+/* Space between the stepper and the framed content */
+#snout-booking .sb-step .sb-frame{ margin-top: 8px; }
