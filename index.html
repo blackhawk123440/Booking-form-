@@ -121,8 +121,8 @@
 
     /* Webflow height integration */
     .booking-form {
-      transition: height 0.3s ease-out, min-height 0.3s ease-out;
-      will-change: height, min-height;
+      transition: height 0.4s ease, min-height 0.4s ease, transform 0.3s ease;
+      will-change: height, min-height, transform;
       transform: translateZ(0);
       -webkit-transform: translateZ(0);
       -webkit-backface-visibility: hidden;
@@ -1523,15 +1523,15 @@
     }
 
     /* Mobile Layout (Webflow Optimized) - Single Column */
+
     @media (max-width: 480px) {
       /* Enhanced Webflow mobile optimizations */
       .booking-form {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        border-radius: 0;
-        box-shadow: none;
+        width: calc(100vw - 16px);
+        max-width: 420px;
+        margin: 8px auto;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         position: relative;
         z-index: 10;
         isolation: isolate;
@@ -1542,17 +1542,51 @@
         backface-visibility: hidden;
         will-change: transform, height, min-height;
         touch-action: manipulation;
-        transition: height 0.4s ease, min-height 0.4s ease, transform 0.3s ease;
+        transition: height 0.3s ease, min-height 0.3s ease, transform 0.3s ease;
         height: auto;
         min-height: auto;
-        background: var(--white);
       }
 
       .booking-content {
         padding: var(--space-lg);
-        background: var(--white);
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+      }
+
+      /* Mobile Webflow integration optimizations */
+      .service-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+
+      .booking-type-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+
+      .contact-row {
+        grid-template-columns: 1fr;
+      }
+
+      .time-slots-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Mobile-specific card styling */
+      .service-card {
+        padding: var(--space-lg);
+        min-height: 80px;
+        border-radius: var(--radius-lg);
+        background: var(--white);
+        border: 2px solid var(--secondary);
+      }
+
+      .type-card {
+        padding: var(--space-lg);
+        min-height: 80px;
+        border-radius: var(--radius-lg);
+        background: var(--white);
+        border: 2px solid var(--secondary);
       }
 
       /* Enhanced touch targets for mobile */
@@ -1811,42 +1845,6 @@
         border-radius: var(--radius-md) !important;
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
-      }
-
-      /* Mobile Webflow integration optimizations */
-      .service-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-sm);
-      }
-
-      .booking-type-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-sm);
-      }
-
-      .contact-row {
-        grid-template-columns: 1fr;
-      }
-
-      .time-slots-grid {
-        grid-template-columns: 1fr;
-      }
-
-      /* Mobile-specific card styling */
-      .service-card {
-        padding: var(--space-lg);
-        min-height: 80px;
-        border-radius: var(--radius-lg);
-        background: var(--white);
-        border: 2px solid var(--secondary);
-      }
-
-      .type-card {
-        padding: var(--space-lg);
-        min-height: 80px;
-        border-radius: var(--radius-lg);
-        background: var(--white);
-        border: 2px solid var(--secondary);
       }
 
       .contact-textarea {
@@ -2475,44 +2473,40 @@
 
   <script>
     // ===== DYNAMIC CONTAINER HEIGHT ===== */
-    let heightAdjustmentTimeout;
-    
-    function adjustContainerHeight(immediate = false) {
-      // Debounce height adjustments to prevent lag
-      if (heightAdjustmentTimeout && !immediate) {
-        clearTimeout(heightAdjustmentTimeout);
-      }
+    function adjustContainerHeight() {
+      const bookingForm = document.querySelector('.booking-form');
+      const activeSection = document.querySelector('.form-section.active');
       
-      const doHeightAdjustment = () => {
-        const bookingForm = document.querySelector('.booking-form');
-        const activeSection = document.querySelector('.form-section.active');
+      if (bookingForm && activeSection) {
+        // Force a reflow to get accurate measurements
+        bookingForm.style.height = 'auto';
+        bookingForm.style.minHeight = 'auto';
         
-        if (!bookingForm || !activeSection) return;
-        
-        // Get measurements without forcing reflow
-        const sectionHeight = activeSection.scrollHeight;
-        const progressContainer = document.querySelector('.progress-container');
-        const progressHeight = progressContainer ? progressContainer.offsetHeight : 0;
-        const padding = 24;
-        
-        // Calculate total height needed
-        const totalHeight = sectionHeight + progressHeight + padding;
-        
-        // Only update if height actually changed to prevent unnecessary reflows
-        const currentHeight = bookingForm.style.height;
-        if (currentHeight !== `${totalHeight}px`) {
+        // Use requestAnimationFrame to ensure DOM is updated
+        requestAnimationFrame(() => {
+          // Get the natural height of the active section
+          const sectionHeight = activeSection.scrollHeight;
+          const progressContainer = document.querySelector('.progress-container');
+          const progressHeight = progressContainer ? progressContainer.offsetHeight : 0;
+          
+          // Add extra padding for better visual spacing
+          const padding = 24; // 12px top + 12px bottom
+          
+          // Calculate total height needed
+          const totalHeight = sectionHeight + progressHeight + padding;
+          
+          // Set container height with smooth transition
           bookingForm.style.height = `${totalHeight}px`;
           bookingForm.style.minHeight = `${totalHeight}px`;
           
           // Notify Webflow about height changes
           notifyWebflowHeightChange(totalHeight);
-        }
-      };
-      
-      if (immediate) {
-        doHeightAdjustment();
-      } else {
-        heightAdjustmentTimeout = setTimeout(doHeightAdjustment, 50);
+          
+          // Force Webflow update after a short delay
+          setTimeout(() => {
+            forceWebflowUpdate();
+          }, 100);
+        });
       }
     }
 
@@ -2761,10 +2755,21 @@
             break;
         }
 
-        // Single height adjustment after step is set up
+        // Adjust container height after step is set up
         setTimeout(() => {
-          adjustContainerHeight(true); // Use immediate adjustment
-        }, 200);
+          adjustContainerHeight();
+        }, 100);
+        
+        // Additional height adjustment after animations complete
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 400);
+        
+        // Final height adjustment for Webflow integration
+        setTimeout(() => {
+          adjustContainerHeight();
+          forceWebflowUpdate();
+        }, 600);
       }
 
       selectService(service) {
@@ -3031,7 +3036,9 @@
           });
           
         // Adjust container height after dates display is updated
-        adjustContainerHeight();
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 50);
       }
 
       removeDate(dateStr) {
@@ -3042,7 +3049,9 @@
         this.updateButtonStates();
         
         // Adjust container height after removing date
-        adjustContainerHeight();
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 50);
       }
 
       applyFirstDateTimesToAll() {
@@ -3062,7 +3071,9 @@
         this.updateButtonStates();
         
         // Adjust container height after applying times
-        adjustContainerHeight();
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 50);
       }
 
       formatTimesForService(times, dateStr) {
@@ -3227,7 +3238,9 @@
         this.setupNavigation();
         
         // Adjust container height after calendar render
-        adjustContainerHeight();
+        setTimeout(() => {
+          adjustContainerHeight();
+        }, 50);
       }
 
       getDateString(day) {
@@ -3536,7 +3549,6 @@
 
     // ===== RESIZE OBSERVER FOR DYNAMIC HEIGHT =====
     let resizeObserver;
-    let resizeTimeout;
     
     function setupResizeObserver() {
       const bookingForm = document.querySelector('.booking-form');
@@ -3544,13 +3556,9 @@
       
       if (bookingForm && activeSection && 'ResizeObserver' in window) {
         resizeObserver = new ResizeObserver((entries) => {
-          // Debounce resize observer calls
-          if (resizeTimeout) {
-            clearTimeout(resizeTimeout);
-          }
-          resizeTimeout = setTimeout(() => {
+          for (let entry of entries) {
             adjustContainerHeight();
-          }, 100);
+          }
         });
         
         resizeObserver.observe(activeSection);
@@ -3558,60 +3566,32 @@
     }
 
     // ===== WEBFLOW INTEGRATION HELPERS =====
-    let webflowUpdateTimeout;
-    
     function notifyWebflowHeightChange(height) {
-      // Debounce Webflow notifications to prevent spam
-      if (webflowUpdateTimeout) {
-        clearTimeout(webflowUpdateTimeout);
+      // Notify parent Webflow container about height changes
+      if (window.parent && window.parent.postMessage) {
+        window.parent.postMessage({
+          type: 'booking-form-height-change',
+          height: height,
+          source: 'booking-form'
+        }, '*');
       }
       
-      webflowUpdateTimeout = setTimeout(() => {
-        // Notify parent Webflow container about height changes
-        if (window.parent && window.parent.postMessage) {
-          window.parent.postMessage({
-            type: 'booking-form-height-change',
-            height: height,
-            source: 'booking-form'
-          }, '*');
-        }
-      }, 50);
+      // Also try to trigger Webflow's resize event
+      if (window.dispatchEvent) {
+        window.dispatchEvent(new Event('resize'));
+      }
     }
 
     function forceWebflowUpdate() {
-      // Lightweight Webflow update - only when necessary
-      if (window.parent && window.parent.dispatchEvent) {
-        window.parent.dispatchEvent(new Event('resize'));
-      }
-    }
-
-    // ===== RESPONSIVE UTILITIES =====
-    function isDesktop() {
-      return window.innerWidth >= 769;
-    }
-
-    function isMobile() {
-      return window.innerWidth <= 480;
-    }
-
-    function isTablet() {
-      return window.innerWidth > 480 && window.innerWidth < 769;
-    }
-
-    function updateResponsiveClasses() {
-      const bookingForm = document.querySelector('.booking-form');
-      if (!bookingForm) return;
-
-      // Remove existing responsive classes
-      bookingForm.classList.remove('desktop-layout', 'tablet-layout', 'mobile-layout');
-      
-      // Add appropriate class
-      if (isDesktop()) {
-        bookingForm.classList.add('desktop-layout');
-      } else if (isTablet()) {
-        bookingForm.classList.add('tablet-layout');
-      } else if (isMobile()) {
-        bookingForm.classList.add('mobile-layout');
+      // Force Webflow to recalculate layout
+      if (window.parent && window.parent.document) {
+        const parentDoc = window.parent.document;
+        const webflowElements = parentDoc.querySelectorAll('[data-w-id]');
+        webflowElements.forEach(el => {
+          if (el.style) {
+            el.style.transform = 'translateZ(0)';
+          }
+        });
       }
     }
 
@@ -3621,9 +3601,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       bookingForm = new BookingFormController();
       window.bookingForm = bookingForm; // Make globally accessible
-      
-      // Setup responsive classes
-      updateResponsiveClasses();
       
       // Setup resize observer after initial load
       setTimeout(() => {
@@ -3652,21 +3629,10 @@
     });
 
     // ===== WINDOW RESIZE HANDLER =====
-    let windowResizeTimeout;
-    
     window.addEventListener('resize', () => {
-      // Debounce window resize events
-      if (windowResizeTimeout) {
-        clearTimeout(windowResizeTimeout);
-      }
-      
-      windowResizeTimeout = setTimeout(() => {
-        // Update responsive classes
-        updateResponsiveClasses();
-        
-        // Adjust container height
+      setTimeout(() => {
         adjustContainerHeight();
-      }, 150);
+      }, 100);
     });
 
     // ===== WEBFLOW INTEGRATION LISTENER =====
