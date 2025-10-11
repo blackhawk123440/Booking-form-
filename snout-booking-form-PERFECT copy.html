@@ -3415,20 +3415,5 @@
     document.addEventListener('touchstart', () => {}, { passive: true });
     document.addEventListener('touchmove', () => {}, { passive: true });
   </script>
-  <script>
-(function(){
-  function postHeight(){
-    const h = Math.max(
-      document.documentElement.scrollHeight,
-      document.body.scrollHeight
-    );
-    parent.postMessage({ type: 'snout-resize', height: h }, '*');
-  }
-  postHeight();
-  new ResizeObserver(postHeight).observe(document.body);
-  window.addEventListener('load', postHeight);
-})();
-</script>
-
 </body>
 </html>
