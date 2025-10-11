@@ -1,0 +1,263 @@
+<!-- WEBFLOW FOOTER CODE - Add this to Page Settings > Custom Code > Footer -->
+
+<script>
+// Webflow Booking Form Integration Script
+(function() {
+  'use strict';
+  
+  let lastHeight = 0;
+  let isInitialized = false;
+  let resizeTimeout;
+  let heightTimeout;
+  
+  // Configuration
+  const config = window.bookingFormConfig || {
+    containerId: 'bookingFormContainer',
+    autoResize: true,
+    debug: false
+  };
+  
+  // Debug logging
+  function log(message, data = null) {
+    if (config.debug) {
+      console.log('[Booking Form Integration]', message, data);
+    }
+  }
+  
+  // Get container element
+  function getContainer() {
+    return document.getElementById(config.containerId);
+  }
+  
+  // Get iframe element
+  function getIframe() {
+    const container = getContainer();
+    return container ? container.querySelector('iframe') : null;
+  }
+  
+  // Update container height
+  function updateContainerHeight(newHeight) {
+    if (!newHeight || newHeight === lastHeight) return;
+    
+    lastHeight = newHeight;
+    const container = getContainer();
+    
+    if (container) {
+      // Smooth height transition
+      container.style.height = newHeight + 'px';
+      container.style.minHeight = newHeight + 'px';
+      
+      // Add loaded class for styling
+      container.classList.add('booking-form-loaded');
+      
+      log('Height updated', { newHeight, container: container.id });
+      
+      // Trigger Webflow events
+      triggerWebflowEvents();
+    }
+  }
+  
+  // Trigger Webflow layout recalculation
+  function triggerWebflowEvents() {
+    // Trigger resize event
+    window.dispatchEvent(new Event('resize'));
+    
+    // Force Webflow redraw if available
+    if (window.Webflow && window.Webflow.redraw) {
+      window.Webflow.redraw();
+    }
+    
+    // Trigger custom event for other scripts
+    window.dispatchEvent(new CustomEvent('bookingFormResize', {
+      detail: { height: lastHeight }
+    }));
+  }
+  
+  // Handle messages from the booking form
+  function handleFormMessage(event) {
+    if (!event.data || event.data.source !== 'booking-form') return;
+    
+    switch (event.data.type) {
+      case 'booking-form-height-change':
+        updateContainerHeight(event.data.height);
+        break;
+        
+      case 'booking-form-loaded':
+        log('Form loaded successfully');
+        const container = getContainer();
+        if (container) {
+          container.classList.add('booking-form-loaded');
+        }
+        break;
+        
+      case 'booking-form-error':
+        log('Form error', event.data.error);
+        break;
+    }
+  }
+  
+  // Handle window resize
+  function handleWindowResize() {
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+    }
+    
+    resizeTimeout = setTimeout(() => {
+      const iframe = getIframe();
+      if (iframe && iframe.contentWindow) {
+        // Notify the form about resize
+        iframe.contentWindow.postMessage({
+          type: 'webflow-resize',
+          width: iframe.offsetWidth,
+          height: iframe.offsetHeight,
+          viewportWidth: window.innerWidth
+        }, '*');
+      }
+      
+      // Trigger Webflow events
+      triggerWebflowEvents();
+      
+      log('Window resized', {
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    }, 150);
+  }
+  
+  // Handle iframe load
+  function handleIframeLoad() {
+    log('Iframe loaded');
+    
+    const container = getContainer();
+    if (container) {
+      container.classList.add('booking-form-loaded');
+    }
+    
+    // Initial height request
+    setTimeout(() => {
+      const iframe = getIframe();
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({
+          type: 'webflow-ready',
+          containerWidth: container.offsetWidth,
+          containerHeight: container.offsetHeight
+        }, '*');
+      }
+    }, 100);
+  }
+  
+  // Initialize the integration
+  function initialize() {
+    if (isInitialized) return;
+    
+    log('Initializing booking form integration');
+    
+    // Set up message listener
+    window.addEventListener('message', handleFormMessage);
+    
+    // Set up window resize listener
+    window.addEventListener('resize', handleWindowResize);
+    
+    // Set up iframe load listener
+    const iframe = getIframe();
+    if (iframe) {
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        handleIframeLoad();
+      } else {
+        iframe.addEventListener('load', handleIframeLoad);
+      }
+    }
+    
+    // Initial setup
+    setTimeout(() => {
+      const container = getContainer();
+      if (container) {
+        // Set initial height
+        updateContainerHeight(400);
+        
+        // Request form to send initial height
+        const iframe = getIframe();
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage({
+            type: 'webflow-init',
+            containerWidth: container.offsetWidth
+          }, '*');
+        }
+      }
+    }, 500);
+    
+    isInitialized = true;
+    log('Integration initialized');
+  }
+  
+  // Start when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+  } else {
+    initialize();
+  }
+  
+  // Expose API for external use
+  window.bookingFormIntegration = {
+    updateHeight: updateContainerHeight,
+    triggerResize: triggerWebflowEvents,
+    getHeight: () => lastHeight,
+    isLoaded: () => isInitialized
+  };
+  
+})();
+</script>
+
+<!-- Form Submission Handler (Optional) -->
+<script>
+// Handle form submissions (if using Webflow Forms)
+window.bookingFormSubmission = {
+  // Submit to Webflow form
+  submitToWebflow: function(formData) {
+    // Find Webflow form
+    const webflowForm = document.querySelector('#webflow-booking-form');
+    if (!webflowForm) {
+      console.warn('Webflow form not found');
+      return false;
+    }
+    
+    // Populate hidden fields
+    const hiddenFields = webflowForm.querySelectorAll('input[type="hidden"]');
+    hiddenFields.forEach(field => {
+      if (formData[field.name]) {
+        field.value = formData[field.name];
+      }
+    });
+    
+    // Submit the form
+    webflowForm.submit();
+    return true;
+  },
+  
+  // Submit to external endpoint
+  submitToExternal: function(formData, endpoint) {
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Form submitted successfully:', data);
+      // Trigger success event
+      window.dispatchEvent(new CustomEvent('bookingFormSubmitted', {
+        detail: { data: data, formData: formData }
+      }));
+    })
+    .catch(error => {
+      console.error('Form submission error:', error);
+      // Trigger error event
+      window.dispatchEvent(new CustomEvent('bookingFormError', {
+        detail: { error: error, formData: formData }
+      }));
+    });
+  }
+};
+</script>

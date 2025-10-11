@@ -1,0 +1,81 @@
+<!-- WEBFLOW EMBED TEMPLATE - Use this in your Webflow Embed element -->
+
+<div class="booking-form-container" id="bookingFormContainer">
+  <div class="booking-form-loading">
+    Loading booking form...
+  </div>
+  
+  <!-- Replace YOUR_DOMAIN with your actual domain where the form is hosted -->
+  <iframe 
+    src="https://YOUR_DOMAIN.com/booking-form.html" 
+    width="100%" 
+    height="600" 
+    frameborder="0"
+    scrolling="no"
+    style="border: none; overflow: hidden; display: block;"
+    title="Snout Pet Care Booking Form"
+    loading="lazy"
+    onload="
+      // Auto-resize iframe when content loads
+      this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
+      
+      // Notify parent about load
+      if (this.contentWindow) {
+        this.contentWindow.postMessage({
+          type: 'webflow-iframe-loaded',
+          height: this.contentWindow.document.body.scrollHeight
+        }, '*');
+      }
+    ">
+  </iframe>
+</div>
+
+<!-- Alternative: Direct HTML Embed (if you want to host the form directly in Webflow) -->
+<!-- 
+<div class="booking-form-container" id="bookingFormContainer">
+  <div class="booking-form-loading">
+    Loading booking form...
+  </div>
+  
+  <!-- Paste your entire booking form HTML here -->
+  <!-- <div class="booking-form" data-wf-form="booking">
+    <!-- All your form content goes here -->
+  <!-- </div>
+</div>
+-->
+
+<script>
+// Additional iframe handling for better integration
+(function() {
+  const container = document.getElementById('bookingFormContainer');
+  const iframe = container.querySelector('iframe');
+  
+  if (iframe) {
+    // Handle iframe load
+    iframe.addEventListener('load', function() {
+      container.classList.add('booking-form-loaded');
+      
+      // Try to get initial height from iframe content
+      try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        if (iframeDoc && iframeDoc.body) {
+          const height = iframeDoc.body.scrollHeight;
+          if (height > 0) {
+            iframe.style.height = height + 'px';
+          }
+        }
+      } catch (e) {
+        // Cross-origin restrictions - use default height
+        iframe.style.height = '600px';
+      }
+    });
+    
+    // Handle resize messages from iframe
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'iframe-resize') {
+        iframe.style.height = event.data.height + 'px';
+      }
+    });
+  }
+})();
+</script>
