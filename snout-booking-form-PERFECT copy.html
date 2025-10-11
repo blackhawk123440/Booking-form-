@@ -96,6 +96,7 @@
     /* Webflow performance optimizations */
     .booking-container,
     .booking-form,
+    .step-container,
     .booking-content {
       transform: translateZ(0);
       -webkit-transform: translateZ(0);
@@ -109,6 +110,7 @@
     /* Webflow-specific optimizations */
     .booking-container,
     .booking-form,
+    .step-container,
     .booking-content,
     .form-section {
       -webkit-font-smoothing: antialiased;
@@ -150,78 +152,25 @@
       isolation: isolate;
       contain: layout style paint;
       transition: all var(--transition-slow);
-      will-change: transform, min-height;
+      will-change: transform;
       backface-visibility: hidden;
-      min-height: 400px;
+      min-height: 0;
       flex-shrink: 0;
     }
 
-    /* Dynamic height adjustments for each step */
-    .booking-form.step-1 {
-      min-height: 420px;
-      height: auto;
-    }
-
-    .booking-form.step-2 {
-      min-height: 500px;
-      height: auto;
-    }
-
-    .booking-form.step-3 {
-      min-height: 600px;
-      height: auto;
-    }
-
-    .booking-form.step-4 {
-      min-height: 500px;
-      height: auto;
-    }
-
-    .booking-form.step-5 {
-      min-height: 700px;
-      height: auto;
-    }
-
-    .booking-form.step-6 {
-      min-height: 300px;
-      height: auto;
+    .step-container {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      margin: var(--space-sm) 0;
+      overflow: hidden;
+      transition: all var(--transition-slow);
+      min-height: fit-content;
     }
 
     .booking-content {
       padding: var(--space-md);
-      transition: all var(--transition-base);
-      overflow: hidden;
-    }
-
-    /* Step-specific content adjustments */
-    .form-section {
       min-height: fit-content;
-      transition: all var(--transition-base);
-    }
-
-    /* Optimize step content heights */
-    .form-section#step1 {
-      min-height: 350px;
-    }
-
-    .form-section#step2 {
-      min-height: 430px;
-    }
-
-    .form-section#step3 {
-      min-height: 530px;
-    }
-
-    .form-section#step4 {
-      min-height: 430px;
-    }
-
-    .form-section#step5 {
-      min-height: 630px;
-    }
-
-    .form-section#step6 {
-      min-height: 230px;
     }
 
     /* ===== PROGRESS INDICATOR ===== */
@@ -1456,60 +1405,15 @@
         touch-action: manipulation;
       }
 
-      /* Mobile-specific step height adjustments */
-      .booking-form.step-1 {
-        min-height: 380px;
-      }
-
-      .booking-form.step-2 {
-        min-height: 450px;
-      }
-
-      .booking-form.step-3 {
-        min-height: 550px;
-      }
-
-      .booking-form.step-4 {
-        min-height: 450px;
-      }
-
-      .booking-form.step-5 {
-        min-height: 650px;
-      }
-
-      .booking-form.step-6 {
-        min-height: 280px;
+      .step-container {
+        margin: var(--space-xs) 0;
+        border-radius: var(--radius-lg);
       }
 
       .booking-content {
         padding: var(--space-lg);
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
-      }
-
-      /* Mobile step content height adjustments */
-      .form-section#step1 {
-        min-height: 310px;
-      }
-
-      .form-section#step2 {
-        min-height: 380px;
-      }
-
-      .form-section#step3 {
-        min-height: 480px;
-      }
-
-      .form-section#step4 {
-        min-height: 380px;
-      }
-
-      .form-section#step5 {
-        min-height: 580px;
-      }
-
-      .form-section#step6 {
-        min-height: 210px;
       }
 
       /* Enhanced touch targets for mobile */
@@ -1921,7 +1825,7 @@
       }
 
       /* Optimize scrolling performance */
-      .booking-form, .booking-content, .time-modal-content, .time-slots-container {
+      .booking-form, .step-container, .booking-content, .time-modal-content, .time-slots-container {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
         scroll-behavior: smooth;
@@ -2031,8 +1935,9 @@
       </div>
     </div>
 
-    <div class="booking-content">
-      <!-- Step 1: Service Selection -->
+    <div class="step-container">
+      <div class="booking-content">
+        <!-- Step 1: Service Selection -->
       <div class="form-section active" id="step1">
         <div class="section-header">
           <div class="section-icon">
@@ -2391,6 +2296,7 @@
           Done
         </button>
       </div>
+      </div>
     </div>
   </div>
 
@@ -2584,15 +2490,6 @@
       setupStep(step) {
         this.state.currentStep = step;
         this.state.updateProgress();
-
-        // Update form container class for dynamic sizing
-        const bookingForm = document.querySelector('.booking-form');
-        if (bookingForm) {
-          // Remove all step classes
-          bookingForm.classList.remove('step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6');
-          // Add current step class
-          bookingForm.classList.add(`step-${step}`);
-        }
 
         // Hide all steps
         this.elements.steps.forEach(s => s.classList.remove('active'));
