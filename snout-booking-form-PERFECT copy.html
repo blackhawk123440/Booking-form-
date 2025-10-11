@@ -150,21 +150,78 @@
       isolation: isolate;
       contain: layout style paint;
       transition: all var(--transition-slow);
-      will-change: transform;
+      will-change: transform, min-height;
       backface-visibility: hidden;
-      min-height: auto;
-      height: auto;
+      min-height: 400px;
       flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
+    }
+
+    /* Dynamic height adjustments for each step */
+    .booking-form.step-1 {
+      min-height: 420px;
+      height: auto;
+    }
+
+    .booking-form.step-2 {
+      min-height: 500px;
+      height: auto;
+    }
+
+    .booking-form.step-3 {
+      min-height: 600px;
+      height: auto;
+    }
+
+    .booking-form.step-4 {
+      min-height: 500px;
+      height: auto;
+    }
+
+    .booking-form.step-5 {
+      min-height: 700px;
+      height: auto;
+    }
+
+    .booking-form.step-6 {
+      min-height: 300px;
+      height: auto;
     }
 
     .booking-content {
       padding: var(--space-md);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
+      transition: all var(--transition-base);
+      overflow: hidden;
+    }
+
+    /* Step-specific content adjustments */
+    .form-section {
+      min-height: fit-content;
+      transition: all var(--transition-base);
+    }
+
+    /* Optimize step content heights */
+    .form-section#step1 {
+      min-height: 350px;
+    }
+
+    .form-section#step2 {
+      min-height: 430px;
+    }
+
+    .form-section#step3 {
+      min-height: 530px;
+    }
+
+    .form-section#step4 {
+      min-height: 430px;
+    }
+
+    .form-section#step5 {
+      min-height: 630px;
+    }
+
+    .form-section#step6 {
+      min-height: 230px;
     }
 
     /* ===== PROGRESS INDICATOR ===== */
@@ -244,13 +301,10 @@
     .form-section {
       display: none;
       animation: fadeInUp 0.4s ease;
-      flex: 1;
-      min-height: 0;
     }
 
     .form-section.active {
-      display: flex;
-      flex-direction: column;
+      display: block;
     }
 
     @keyframes fadeInUp {
@@ -1258,8 +1312,6 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: var(--space-md);
-      margin-top: auto;
-      flex-shrink: 0;
     }
 
     .btn {
@@ -1346,62 +1398,6 @@
       border: 1px solid var(--secondary);
     }
 
-    /* ===== STEP-SPECIFIC HEIGHT ADJUSTMENTS ===== */
-    .form-section#step1 {
-      min-height: 400px;
-    }
-
-    .form-section#step2 {
-      min-height: 500px;
-    }
-
-    .form-section#step3 {
-      min-height: 600px;
-    }
-
-    .form-section#step4 {
-      min-height: 450px;
-    }
-
-    .form-section#step5 {
-      min-height: 650px;
-    }
-
-    .form-section#step6 {
-      min-height: 300px;
-    }
-
-    /* Webflow-specific container height adjustments */
-    .booking-form[data-current-step="1"] {
-      min-height: 450px;
-      transition: min-height var(--transition-slow);
-    }
-
-    .booking-form[data-current-step="2"] {
-      min-height: 550px;
-      transition: min-height var(--transition-slow);
-    }
-
-    .booking-form[data-current-step="3"] {
-      min-height: 650px;
-      transition: min-height var(--transition-slow);
-    }
-
-    .booking-form[data-current-step="4"] {
-      min-height: 500px;
-      transition: min-height var(--transition-slow);
-    }
-
-    .booking-form[data-current-step="5"] {
-      min-height: 700px;
-      transition: min-height var(--transition-slow);
-    }
-
-    .booking-form[data-current-step="6"] {
-      min-height: 350px;
-      transition: min-height var(--transition-slow);
-    }
-
     .confirmation-message h3 {
       font-size: var(--font-size-xl);
       font-weight: 600;
@@ -1458,14 +1454,62 @@
         backface-visibility: hidden;
         will-change: transform;
         touch-action: manipulation;
-        min-height: auto;
-        height: auto;
+      }
+
+      /* Mobile-specific step height adjustments */
+      .booking-form.step-1 {
+        min-height: 380px;
+      }
+
+      .booking-form.step-2 {
+        min-height: 450px;
+      }
+
+      .booking-form.step-3 {
+        min-height: 550px;
+      }
+
+      .booking-form.step-4 {
+        min-height: 450px;
+      }
+
+      .booking-form.step-5 {
+        min-height: 650px;
+      }
+
+      .booking-form.step-6 {
+        min-height: 280px;
       }
 
       .booking-content {
         padding: var(--space-lg);
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+      }
+
+      /* Mobile step content height adjustments */
+      .form-section#step1 {
+        min-height: 310px;
+      }
+
+      .form-section#step2 {
+        min-height: 380px;
+      }
+
+      .form-section#step3 {
+        min-height: 480px;
+      }
+
+      .form-section#step4 {
+        min-height: 380px;
+      }
+
+      .form-section#step5 {
+        min-height: 580px;
+      }
+
+      .form-section#step6 {
+        min-height: 210px;
       }
 
       /* Enhanced touch targets for mobile */
@@ -1860,31 +1904,6 @@
 
       .confirmation-message p {
         font-size: var(--font-size-sm);
-      }
-
-      /* Mobile step-specific height adjustments */
-      .booking-form[data-current-step="1"] {
-        min-height: 400px !important;
-      }
-
-      .booking-form[data-current-step="2"] {
-        min-height: 450px !important;
-      }
-
-      .booking-form[data-current-step="3"] {
-        min-height: 550px !important;
-      }
-
-      .booking-form[data-current-step="4"] {
-        min-height: 400px !important;
-      }
-
-      .booking-form[data-current-step="5"] {
-        min-height: 600px !important;
-      }
-
-      .booking-form[data-current-step="6"] {
-        min-height: 300px !important;
       }
 
       /* Mobile performance optimizations */
@@ -2566,10 +2585,13 @@
         this.state.currentStep = step;
         this.state.updateProgress();
 
-        // Update Webflow data attribute for container height adjustment
+        // Update form container class for dynamic sizing
         const bookingForm = document.querySelector('.booking-form');
         if (bookingForm) {
-          bookingForm.setAttribute('data-current-step', step);
+          // Remove all step classes
+          bookingForm.classList.remove('step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6');
+          // Add current step class
+          bookingForm.classList.add(`step-${step}`);
         }
 
         // Hide all steps
