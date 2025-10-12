@@ -1909,6 +1909,30 @@
   }
 }
 
+
+/* --- FIX: Compact calendar layout for Webflow embed (v3) --- */
+.calendar-container {
+  max-width: 380px !important;
+  margin: 0 auto !important;
+  padding: 8px !important;
+}
+
+.calendar-grid {
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 2px !important;
+}
+
+.calendar-day,
+.calendar-header-day {
+  font-size: 11px !important;
+  padding: 4px !important;
+  min-height: 34px !important;
+}
+
+.calendar-title {
+  font-size: 14px !important;
+}
+
 </style>
 </head>
 <body>
