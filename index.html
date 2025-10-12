@@ -1893,6 +1893,22 @@
   transform-origin: top center !important;
 }
 
+
+/* --- FIX: Reduce calendar visual scale for Webflow embedding (v2) --- */
+.calendar-container {
+  max-width: 420px !important;
+  margin: 0 auto !important;
+}
+.calendar-container * {
+  transform: scale(0.85);
+  transform-origin: top center;
+}
+@media (max-width: 480px) {
+  .calendar-container * {
+    transform: scale(0.9);
+  }
+}
+
 </style>
 </head>
 <body>
