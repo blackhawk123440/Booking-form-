@@ -746,6 +746,8 @@
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: var(--space-xs);
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .calendar-header-day {
@@ -1421,7 +1423,7 @@
       }
 
       .booking-content {
-        padding: var(--space-lg);
+        padding: var(--space-md);
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
       }
@@ -1577,12 +1579,16 @@
       }
 
       .calendar-container {
-        padding: var(--space-md);
+        padding: var(--space-sm);
         margin-bottom: var(--space-lg);
+        margin-left: -var(--space-xs);
+        margin-right: -var(--space-xs);
+        width: calc(100% + var(--space-sm));
       }
 
       .calendar-header {
         margin-bottom: var(--space-sm);
+        padding: 0 var(--space-xs);
       }
 
         .calendar-title {
@@ -1599,14 +1605,25 @@
 
         .calendar-grid {
           gap: 2px;
+          padding: 0 var(--space-xs);
+          width: 100%;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .calendar-header-day,
         .calendar-day {
-          padding: var(--space-xs);
+          padding: 6px 2px;
           font-size: var(--font-size-xs);
-          min-height: 38px;
+          min-height: 36px;
           border-radius: var(--radius-sm);
+          flex: 1;
+          min-width: 0;
+          max-width: 100%;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .calendar-day {
