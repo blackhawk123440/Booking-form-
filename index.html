@@ -1884,7 +1884,16 @@
         transform: rotate(360deg);
       }
     }
-  </style>
+  
+/* Fix: limit calendar size when embedded in Webflow */
+.calendar-container {
+  max-width: 420px !important;
+  margin: 0 auto !important;
+  transform: scale(0.9) !important;
+  transform-origin: top center !important;
+}
+
+</style>
 </head>
 <body>
   <div class="booking-form" data-wf-form="booking">
