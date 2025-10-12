@@ -1,8 +1,8 @@
 {
   "name": "snout-booking-form",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
-  "description": "Snout Services booking form (Express + Webflow iframe-ready)",
+  "description": "Snout Services booking form (Express + Webflow iframe-ready, responsive wrapper)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

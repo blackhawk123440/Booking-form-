@@ -1,66 +1,59 @@
-# Snout Booking Form – Deploy to Render + Embed in Webflow
+Snout Booking Form — Render + Webflow embed
 
-This repo serves the exact booking form as a standalone page and makes it easy to embed into Webflow with perfect visual fidelity and mobile readiness.
+This build keeps your original HTML intact and adds
+1) a centered white container that caps width on desktop and trims spacing on mobile
+2) a robust auto-resize messenger so the iframe perfectly fits each step
 
-## Quick Start (Local)
-
-```bash
+Local
 npm install
 npm run dev
-# open http://localhost:3000
-```
+open http://localhost:3000
 
-## Deploy to Render (from GitHub)
+Render
+New → Web Service → connect repo
+Build command: npm install
+Start command: node server.js
 
-1. Push this folder to a new GitHub repo.
-2. In Render, click New → Web Service.
-3. Connect your repo, choose the default branch.
-4. Runtime: Node. Build Command: `npm install`. Start Command: `node server.js`.
-5. Create the service. Your app will be at `https://<your-service>.onrender.com`.
+Webflow embed listener
+Place this in your Webflow Embed, replacing the src with your Render or custom domain URL.
 
-## Enable iframe embedding (already configured)
-
-This server sets a Content-Security-Policy with:
-```
-frame-ancestors 'self' https://webflow.com https://*.webflow.io https://snoutservices.com https://*.snoutservices.com
-```
-This allows the page to be embedded in your Webflow site and on your own domains. Edit `server.js` if you need to add more.
-
-## Embed in Webflow
-
-1. Add an Embed element where you want the form.
-2. Paste this HTML (replace the `src` with your Render URL):
-
-```html
 <div style="position:relative;width:100%;">
   <iframe
     id="snoutBookingIframe"
-    src="https://<your-service>.onrender.com/"
-    style="width:100%;border:0;overflow:hidden;height:100vh;"
+    src="https://your-service.onrender.com/"
+    style="width:100%;border:0;overflow:hidden;"
     scrolling="no"
     allowtransparency="true"
   ></iframe>
 </div>
 
 <script>
-  // Auto-resize listener (pairs with the inline script inside index.html)
-  window.addEventListener('message', function(e) {
-    try {
-      if (e.data && e.data.type === 'SNOUT_IFRAME_HEIGHT') {
-        var iframe = document.getElementById('snoutBookingIframe');
-        if (iframe && typeof e.data.height === 'number') {
-          iframe.style.height = e.data.height + 'px';
+  (function () {
+    var iframe = document.getElementById('snoutBookingIframe');
+    var wrap = iframe.parentElement;
+    wrap.style.maxWidth = '920px';
+    wrap.style.margin = '0 auto';
+    wrap.style.borderRadius = '16px';
+    wrap.style.boxShadow = '0 6px 32px rgba(0,0,0,0.08)';
+    wrap.style.background = '#ffffff';
+    wrap.style.transition = 'height 240ms ease';
+
+    function setHeights(h) {
+      if (!h || !iframe || !wrap) return;
+      iframe.style.height = h + 'px';
+      wrap.style.height = h + 'px';
+    }
+
+    window.addEventListener('message', function (e) {
+      try {
+        if (e.data && e.data.type === 'SNOUT_IFRAME_HEIGHT') {
+          var h = Number(e.data.height);
+          if (Number.isFinite(h) && h > 0) setHeights(h);
         }
-      }
-    } catch (err) {}
-  });
+      } catch (_) {}
+    });
+  })();
 </script>
-```
 
-That’s it. The form remains visually exact and fully mobile‑optimized. The inner page posts its height to the parent so the iframe expands to fit content on every step.
-
-## Notes
-
-- The original form HTML is preserved as `public/index.html` with a tiny, visual‑no‑change script appended that only posts height to the parent page.
-- All fonts and icons load via HTTPS CDNs.
-- If you later add back‑end submission, you can extend the Express server with an API route.
+Notes
+If you switch to a custom domain like book.snoutservices.com, just replace the iframe src and add that domain in Render.
