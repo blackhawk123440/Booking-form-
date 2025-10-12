@@ -3316,93 +3316,54 @@
   </script>
 
 <style id="snout-embed-overrides">
-  #snoutAutoWrap {
-    box-sizing: border-box;
-    max-width: 920px;
-    margin: 0 auto;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 6px 32px rgba(0,0,0,0.08);
-    overflow: hidden;
-  }
+  #snoutAutoWrap { box-sizing: border-box; max-width: 980px; margin: 0 auto; background: #fff;
+    border-radius: 16px; box-shadow: 0 6px 32px rgba(0,0,0,0.08); overflow: hidden; }
   #snoutAutoWrapInner { padding: clamp(12px, 2.2vw, 24px); }
   body { margin: 0; background: transparent; }
-
-  @media (min-width: 1440px) { #snoutAutoWrapInner { font-size: 0.98rem; } }
-  @media (min-width: 1680px) { #snoutAutoWrapInner { font-size: 0.94rem; } }
-  @media (min-width: 1920px) { #snoutAutoWrapInner { font-size: 0.90rem; } }
-
-  @media (max-width: 767px) {
-    #snoutAutoWrap { border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    [class*="section"], [class*="container"], [class*="grid"], [class*="row"], form, .form, .step, .card {
-      margin-top: 0.5rem !important; margin-bottom: 0.5rem !important;
-    }
-    [class*="grid"], [class*="row"] { gap: 0.5rem !important; }
-    .two-col, .columns, [class*="grid"], [class*="row"] {
-      display: grid !important; grid-template-columns: 1fr !important;
-    }
-    input, select, textarea, button { max-width: 100% !important; }
-  }
-
+  @media (min-width: 1600px) { #snoutAutoWrapInner { font-size: 0.97rem; } }
+  @media (min-width: 1900px) { #snoutAutoWrapInner { font-size: 0.94rem; } }
+  @media (max-width: 767px) { #snoutAutoWrap { border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); } }
   html, body { height: auto !important; overflow: visible !important; }
 </style>
 
 <script id="snout-embed-runtime">
-  (function() {
-    function wrapContent() {
-      if (document.getElementById('snoutAutoWrap')) return;
-      var wrap = document.createElement('div');
-      wrap.id = 'snoutAutoWrap';
-      var inner = document.createElement('div');
-      inner.id = 'snoutAutoWrapInner';
-      while (document.body.firstChild) inner.appendChild(document.body.firstChild);
-      wrap.appendChild(inner);
-      document.body.appendChild(wrap);
-    }
-
-    function sendHeight() {
-      try {
-        var h = Math.max(
-          document.body.scrollHeight,
-          document.documentElement.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.offsetHeight,
-          document.body.clientHeight,
-          document.documentElement.clientHeight
-        );
-        parent.postMessage({ type: 'SNOUT_IFRAME_HEIGHT', height: h }, '*');
-      } catch (e) {}
-    }
-
-    function onReady(fn) {
-      if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        setTimeout(fn, 0);
-      } else {
-        document.addEventListener('DOMContentLoaded', fn);
-      }
-    }
-
-    onReady(function() {
-      try { wrapContent(); } catch(e) {}
-      sendHeight();
-
-      try {
-        var mo = new MutationObserver(function() { requestAnimationFrame(sendHeight); });
-        mo.observe(document.body, { childList: true, subtree: true, attributes: true });
-      } catch(e) {}
-
-      window.addEventListener('resize', function() { requestAnimationFrame(sendHeight); });
-
-      if (window.visualViewport) {
-        try {
-          window.visualViewport.addEventListener('resize', function(){ requestAnimationFrame(sendHeight); });
-          window.visualViewport.addEventListener('scroll', function(){ requestAnimationFrame(sendHeight); });
-        } catch(e) {}
-      }
-
-      setInterval(sendHeight, 1200);
-    });
-  })();
+(function() {
+  function wrapContent() {
+    if (document.getElementById('snoutAutoWrap')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'snoutAutoWrap';
+    var inner = document.createElement('div');
+    inner.id = 'snoutAutoWrapInner';
+    while (document.body.firstChild) inner.appendChild(document.body.firstChild);
+    wrap.appendChild(inner);
+    document.body.appendChild(wrap);
+  }
+  function docHeight() {
+    return Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight,
+      document.body.clientHeight,
+      document.documentElement.clientHeight
+    );
+  }
+  function sendHeight() {
+    try { parent.postMessage({ type: 'SNOUT_IFRAME_HEIGHT', height: docHeight() }, '*'); } catch(e) {}
+  }
+  function burst(times, gap) {
+    var c=0, id=setInterval(function(){ sendHeight(); if(++c>=times) clearInterval(id); }, gap);
+  }
+  function onReady(fn){ if(document.readyState==='complete'||document.readyState==='interactive'){setTimeout(fn,0);} else {document.addEventListener('DOMContentLoaded', fn);} }
+  onReady(function(){
+    wrapContent();
+    burst(8,150); setTimeout(function(){ burst(6,250); },1200); setTimeout(function(){ burst(4,400); },2800);
+    try { new MutationObserver(function(){ requestAnimationFrame(sendHeight); }).observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true}); } catch(e){}
+    window.addEventListener('resize', function(){ requestAnimationFrame(sendHeight); });
+    if (window.visualViewport) { try { visualViewport.addEventListener('resize', function(){ requestAnimationFrame(sendHeight); }); visualViewport.addEventListener('scroll', function(){ requestAnimationFrame(sendHeight); }); } catch(e){} }
+    setInterval(sendHeight, 1200);
+  });
+})();
 </script>
 
 </body>
