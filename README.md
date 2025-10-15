@@ -1,1 +1,0 @@
-Parent embed: set min-height:1600px and listen for SNOUT_IFRAME_HEIGHT.
